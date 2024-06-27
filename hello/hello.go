@@ -52,7 +52,6 @@ func main() {
 
 
 
-
 	// var i int
 	// _ = i // a way to leave a variable empty
 	// // fmt.Println(i)
