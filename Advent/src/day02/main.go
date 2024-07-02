@@ -13,12 +13,98 @@ var gamePlayableReqCubesMap map[string]int = map[string]int{
 	"blue": 14,
 }
 
+// TODO: CONSTRUCT GAMESETSSLICE INSIDE getGameSetsMaps()
+
+
+// solving part-2********************
+
+func getSetMap(gSet string) map[string]int {
+
+	gSetMap := map[string]int{
+		"red": 0,
+		"green": 0,
+		"blue": 0,
+	}
+
+	cubeDraws := strings.Split(gSet, ", ")
+
+	for _, cd := range cubeDraws {
+		cds := strings.Split(cd, " ")
+
+		cn, err := strconv.Atoi(cds[0])
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		gSetMap[cds[1]]  = cn
+		
+	}
+
+	return gSetMap
+}
+
+func getGameSetsMaps(gd string) []map[string]int {
+	
+	gdSplit := strings.Split(gd, ": ")
+	
+	wStr := gdSplit[1]
+	setsStr := strings.Split(wStr, "; ")
+
+	var sliceOfMaps []map[string]int
+	
+	for _, setStr := range setsStr {
+		sliceOfMaps = append(sliceOfMaps, getSetMap(setStr))
+	}
+
+	return sliceOfMaps
+}
+
+func getPower(gData string) int {
+
+	power := 1
+
+	var global map[string]int = map[string]int {
+		"red": 0,
+		"green": 0,
+		"blue": 0,
+	}
+
+	gSetsMaps := getGameSetsMaps(gData)
+
+	for _, gSet := range gSetsMaps {
+		for key, value := range gSet {
+			if global[key] < value {
+				global[key] = value
+			}
+		}
+	}
+
+	for _, value := range global {
+		power *= value
+	}
+
+	return power
+}
+
+func getPowersSum(input []string) int {
+
+	power := 0
+	for _, gData := range input {
+		power += getPower(gData)
+	}
+
+	return power
+}
+
+
+
 func main() {
 	// reading input file
 	inputString := []string(file.ReadFile("input.txt"))
 	gameIdsSum := int(getPlayableGamesIdsSum(inputString))
 
 	fmt.Printf("Answer: %d\n", gameIdsSum)
+	fmt.Printf("sum of powers: %d\n", getPowersSum(inputString))
 	
 }
 
